@@ -56,14 +56,18 @@ public class CommentServiceImpl implements CommentService {
             .orElseThrow(() -> new IllegalArgumentException("Comment not found with id: " + commentId));
         
         comment.setText(request.getText());
-        commentDao.update(comment);
         
-        return comment;
-    }
+        return commentDao.update(comment);
+}
 
     @Override
     @Transactional
     public void deleteComment(Long commentId) {
+        log.debug("Deleting comment with id: {}", commentId);
+        
+        commentDao.findById(commentId)
+            .orElseThrow(() -> new ResourceNotFoundException("Comment", commentId));
+        
         commentDao.delete(commentId);
     }
 }
