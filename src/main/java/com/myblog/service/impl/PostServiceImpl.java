@@ -61,12 +61,9 @@ public class PostServiceImpl implements PostService {
     public Post updatePost(Long id, UpdatePostRequest request) {
         log.debug("Updating post with id: {}", id);
         
-        Optional<Post> existingPost = postDao.findById(id);
-        if (existingPost.isEmpty()) {
-            throw new IllegalArgumentException("Post not found with id: " + id);
-        }
+        Post post = postDao.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Post", id));
         
-        Post post = existingPost.get();
         post.setTitle(request.getTitle());
         post.setText(request.getText());
         post.setTags(request.getTags());
@@ -77,6 +74,9 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(Long id) {
+        log.debug("Deleting post with id: {}", id);
+        postDao.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Post", id));
         postDao.delete(id);
     }
 

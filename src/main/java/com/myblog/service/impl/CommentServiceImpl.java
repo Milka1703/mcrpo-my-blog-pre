@@ -3,6 +3,7 @@ package com.myblog.service.impl;
 import com.myblog.dao.CommentDao;
 import com.myblog.dto.CreateCommentRequest;
 import com.myblog.dto.UpdateCommentRequest;
+import com.myblog.exception.ResourceNotFoundException;
 import com.myblog.model.Comment;
 import com.myblog.service.CommentService;
 import org.slf4j.Logger;
@@ -52,13 +53,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public Comment updateComment(Long commentId, UpdateCommentRequest request) {
-        Comment comment = commentDao.findById(commentId)
-            .orElseThrow(() -> new IllegalArgumentException("Comment not found with id: " + commentId));
+        log.debug("Updating comment with id: {}", commentId);
         
+        Comment comment = commentDao.findById(commentId)
+            .orElseThrow(() -> new ResourceNotFoundException("Comment", commentId));
         comment.setText(request.getText());
         
         return commentDao.update(comment);
-}
+    }
 
     @Override
     @Transactional
@@ -71,4 +73,3 @@ public class CommentServiceImpl implements CommentService {
         commentDao.delete(commentId);
     }
 }
-

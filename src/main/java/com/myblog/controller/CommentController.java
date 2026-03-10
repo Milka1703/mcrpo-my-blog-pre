@@ -58,12 +58,9 @@ public class CommentController {
             @PathVariable Long commentId,
             @RequestBody UpdateCommentRequest request) {
         
-        try {
-            Comment updatedComment = commentService.updateComment(commentId, request);
-            return ResponseEntity.ok(updatedComment);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+        log.debug("PUT /api/posts/{}/comments/{}", postId, commentId);
+        Comment updatedComment = commentService.updateComment(commentId, request);
+        return ResponseEntity.ok(updatedComment);
     }
 
     @DeleteMapping("/{commentId}")
